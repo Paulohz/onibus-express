@@ -47,10 +47,16 @@
     "globals": "^17.6.0",
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
+    "msw": "^2.14.6",
     "prettier": "^3.8.4",
     "ts-jest": "^29.4.11",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",
     "vite": "^8.0.12"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }
