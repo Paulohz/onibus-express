@@ -1,6 +1,6 @@
-import { http, HttpResponse } from 'msw'
+import { http, HttpResponse, RequestHandler } from 'msw'
 
-export const handlers = [
+export const handlers: RequestHandler[] = [
   http.get('http://localhost:3000/viagens', () => {
     return HttpResponse.json([
       {
