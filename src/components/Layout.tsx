@@ -4,7 +4,7 @@ import { Toaster } from 'sonner'
 
 export function Layout() {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-background text-foreground">
       <Header />
       <Toaster richColors position="top-right" />
       <Outlet />

@@ -45,27 +45,27 @@ export default function PassengerFormPage() {
 
   if (!selectedTrip || !selectedSeat) {
     return (
-      <main className="min-h-screen bg-slate-50 p-6 flex items-center justify-center">
-        <p className="text-slate-500">Nenhuma viagem ou assento selecionado.</p>
+      <main className="min-h-screen bg-background p-6 flex items-center justify-center">
+        <p className="text-muted-foreground">Nenhuma viagem ou assento selecionado.</p>
       </main>
     )
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 p-6">
+    <main className="min-h-screen bg-background p-6">
       <div className="max-w-2xl mx-auto space-y-6">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-800 transition-colors"
+          className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Voltar
         </button>
 
-        <h1 className="text-2xl font-bold text-slate-800">Dados do passageiro</h1>
+        <h1 className="text-2xl font-bold text-foreground">Dados do passageiro</h1>
 
         <Card>
-          <CardContent className="pt-6 space-y-1 text-sm text-slate-600">
+          <CardContent className="pt-6 space-y-1 text-sm text-muted-foreground">
             <p>
               <span className="font-medium">Rota:</span> {selectedTrip.route.origin} -{' '}
               {selectedTrip.route.destination}

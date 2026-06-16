@@ -123,7 +123,7 @@ export default function SearchPage() {
 
         {searched && !loading && trips.length === 0 && (
           <div className="text-center py-12 space-y-2">
-            <p className="text-slate-600 font-medium">Nenhuma viagem encontrada</p>
+            <p className="text-muted-foreground font-medium">Nenhuma viagem encontrada</p>
             <p className="text-slate-400 text-sm">Tente uma data ou rota diferente</p>
           </div>
         )}
@@ -134,18 +134,18 @@ export default function SearchPage() {
               <Card key={trip.id} className="hover:shadow-md transition-shadow cursor-pointer">
                 <CardContent className="pt-6 flex items-center justify-between">
                   <div className="space-y-1">
-                    <p className="font-semibold text-slate-800">
+                    <p className="font-semibold text-foreground">
                       {trip.route.origin} - {trip.route.destination}
                     </p>
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-muted-foreground">
                       {new Date(trip.departureDateTime).toLocaleString('pt-BR')}
                     </p>
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-muted-foreground">
                       {trip.availableSeats} vagas disponíveis
                     </p>
                   </div>
                   <div className="text-right space-y-2">
-                    <p className="text-xl font-bold text-slate-800">
+                    <p className="text-xl font-bold text-foreground">
                       R$ {trip.basePrice.toFixed(2)}
                     </p>
                     <Button onClick={() => handleSelectTrip(trip)}>Selecionar</Button>

@@ -15,6 +15,11 @@ vi.mock('sonner', () => ({
   Toaster: () => null,
 }))
 
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: vi.fn().mockReturnValue({ matches: false }),
+})
+
 window.HTMLElement.prototype.scrollIntoView = () => {}
 
 beforeAll(() => server.listen())
