@@ -7,6 +7,14 @@ globalThis.ResizeObserver = class ResizeObserver {
   disconnect() {}
 }
 
+vi.mock('sonner', () => ({
+  toast: {
+    error: vi.fn(),
+    success: vi.fn(),
+  },
+  Toaster: () => null,
+}))
+
 window.HTMLElement.prototype.scrollIntoView = () => {}
 
 beforeAll(() => server.listen())

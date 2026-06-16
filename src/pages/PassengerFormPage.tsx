@@ -10,11 +10,12 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent } from '@/components/ui/card'
 import { useState } from 'react'
 import { useCPFMask } from '@/hooks/useCPFMask'
+import { toast } from 'sonner'
+import { ArrowLeft } from 'lucide-react'
 export default function PassengerFormPage() {
   const navigate = useNavigate()
   const { selectedTrip, selectedSeat, setPassenger, setBookingCode } = useBookingStore()
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const { displayValue: cpfDisplay, onChange: onCPFChange } = useCPFMask()
 
   const {
@@ -28,14 +29,15 @@ export default function PassengerFormPage() {
   async function onSubmit(data: PassengerForm) {
     if (!selectedTrip || !selectedSeat) return
     setLoading(true)
-    setError(null)
     try {
       const booking = await createBooking(selectedTrip.id, selectedSeat, data)
       setPassenger(data)
       setBookingCode(booking.bookingCode)
       navigate('/reservas/confirmacao')
     } catch {
-      setError('Erro ao realizar reserva. Tente novamente.')
+      toast.error('Erro ao realizar reserva. Tente novamente.', {
+        id: 'booking-error',
+      })
     } finally {
       setLoading(false)
     }
@@ -54,9 +56,10 @@ export default function PassengerFormPage() {
       <div className="max-w-2xl mx-auto space-y-6">
         <button
           onClick={() => navigate(-1)}
-          className="text-sm text-slate-500 hover:text-slate-800 transition-colors"
+          className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-800 transition-colors"
         >
-          ← Voltar
+          <ArrowLeft className="h-4 w-4" />
+          Voltar
         </button>
 
         <h1 className="text-2xl font-bold text-slate-800">Dados do passageiro</h1>
@@ -115,8 +118,6 @@ export default function PassengerFormPage() {
                 />
                 {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
               </div>
-
-              {error && <p className="text-sm text-red-500 text-center">{error}</p>}
 
               <Button className="w-full" type="submit" disabled={loading}>
                 {loading ? 'Confirmando...' : 'Confirmar reserva'}

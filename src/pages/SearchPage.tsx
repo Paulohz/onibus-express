@@ -11,6 +11,8 @@ import type { Route, Trip } from '@/types'
 import { searchSchema, type SearchForm } from '@/schemas/searchSchema'
 import { DatePicker } from '@/components/DatePicker'
 import { RouteCombobox } from '@/components/RouteCombobox'
+import { toast } from 'sonner'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export default function SearchPage() {
   const navigate = useNavigate()
@@ -20,7 +22,6 @@ export default function SearchPage() {
   const [trips, setTrips] = useState<Trip[]>([])
   const [loading, setLoading] = useState(false)
   const [searched, setSearched] = useState(false)
-  const [searchError, setSearchError] = useState<string | null>(null)
 
   const [routes, setRoutes] = useState<Route[]>([])
 
@@ -47,13 +48,14 @@ export default function SearchPage() {
   async function onSubmit(data: SearchForm) {
     setLoading(true)
     setSearched(false)
-    setSearchError(null)
     try {
       const result = await searchTrips(data.origin, data.destination, data.date)
       setTrips(result)
       setSearched(true)
     } catch {
-      setSearchError('Erro ao buscar viagens. Tente novamente.')
+      toast.error('Erro ao buscar viagens. Tente novamente.', {
+        id: 'search-error',
+      })
     } finally {
       setLoading(false)
     }
@@ -119,8 +121,6 @@ export default function SearchPage() {
           </CardContent>
         </Card>
 
-        {searchError && <p className="text-center text-red-500">{searchError}</p>}
-
         {searched && !loading && trips.length === 0 && (
           <div className="text-center py-12 space-y-2">
             <p className="text-slate-600 font-medium">Nenhuma viagem encontrada</p>
@@ -149,6 +149,26 @@ export default function SearchPage() {
                       R$ {trip.basePrice.toFixed(2)}
                     </p>
                     <Button onClick={() => handleSelectTrip(trip)}>Selecionar</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {loading && (
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <Card key={i}>
+                <CardContent className="pt-6 flex items-center justify-between">
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-48" />
+                    <Skeleton className="h-3 w-32" />
+                    <Skeleton className="h-3 w-24" />
+                  </div>
+                  <div className="space-y-2 text-right">
+                    <Skeleton className="h-6 w-20" />
+                    <Skeleton className="h-8 w-24" />
                   </div>
                 </CardContent>
               </Card>

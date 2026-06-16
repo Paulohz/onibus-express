@@ -5,6 +5,7 @@ import { vi } from 'vitest'
 import PassengerFormPage from '@/pages/PassengerFormPage'
 import { createBooking } from '@/services/booking'
 import { useBookingStore } from '@/store/useBookingStore'
+import { toast } from 'sonner'
 import type { Trip } from '@/types'
 
 vi.mock('@/services/booking')
@@ -112,8 +113,10 @@ describe('PassengerFormPage', () => {
     await userEvent.type(screen.getByLabelText('E-mail'), 'joao@email.com')
     await userEvent.click(screen.getByText('Confirmar reserva'))
 
-    expect(
-      await screen.findByText('Erro ao realizar reserva. Tente novamente.')
-    ).toBeInTheDocument()
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('Erro ao realizar reserva. Tente novamente.', {
+        id: 'booking-error',
+      })
+    })
   })
 })

@@ -10,13 +10,14 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import type { Booking } from '@/types'
-
+import { toast } from 'sonner'
+import { Skeleton } from '@/components/ui/skeleton'
+import { ArrowLeft } from 'lucide-react'
 export default function BookingSearchPage() {
   const navigate = useNavigate()
   const [booking, setBooking] = useState<Booking | null>(null)
   const [loading, setLoading] = useState(false)
   const [cancelling, setCancelling] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const [cancelled, setCancelled] = useState(false)
 
   const {
@@ -29,14 +30,15 @@ export default function BookingSearchPage() {
 
   async function onSubmit(data: BookingSearchForm) {
     setLoading(true)
-    setError(null)
     setBooking(null)
     setCancelled(false)
     try {
       const result = await getBooking(data.code)
       setBooking(result)
     } catch {
-      setError('Reserva não encontrada. Verifique o código e tente novamente.')
+      toast.error('Reserva não encontrada. Verifique o código e tente novamente.', {
+        id: 'booking-search-error',
+      })
     } finally {
       setLoading(false)
     }
@@ -49,8 +51,13 @@ export default function BookingSearchPage() {
       await cancelBooking(booking.bookingCode)
       setCancelled(true)
       setBooking(null)
+      toast.success('Reserva cancelada com sucesso.', {
+        id: 'booking-cancel-success',
+      })
     } catch {
-      setError('Não foi possível cancelar a reserva. Tente novamente.')
+      toast.error('Não foi possível cancelar a reserva. Tente novamente.', {
+        id: 'booking-cancel-error',
+      })
     } finally {
       setCancelling(false)
     }
@@ -60,9 +67,10 @@ export default function BookingSearchPage() {
     <main className="min-h-screen bg-slate-50 p-6">
       <div className="max-w-2xl mx-auto space-y-6">
         <button
-          onClick={() => navigate('/')}
-          className="text-sm text-slate-500 hover:text-slate-800 transition-colors"
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-800 transition-colors"
         >
+          <ArrowLeft className="h-4 w-4" />
           Voltar
         </button>
 
@@ -78,13 +86,11 @@ export default function BookingSearchPage() {
               </div>
 
               <Button className="w-full" type="submit" disabled={loading}>
-                {loading ? 'Buscando...' : 'Buscar reserva'}
+                Buscar reserva
               </Button>
             </form>
           </CardContent>
         </Card>
-
-        {error && <p className="text-center text-red-500">{error}</p>}
 
         {cancelled && (
           <Card>
@@ -93,6 +99,41 @@ export default function BookingSearchPage() {
               <p className="text-sm text-slate-500">
                 Você pode fazer uma nova busca a qualquer momento.
               </p>
+            </CardContent>
+          </Card>
+        )}
+
+        {loading && (
+          <Card>
+            <CardContent className="pt-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-6 w-24" />
+              </div>
+
+              <hr />
+
+              <div className="space-y-3">
+                {Array.from({ length: 5 }, (_, i) => (
+                  <div key={i} className="flex justify-between">
+                    <Skeleton className="h-4 w-24" />
+                    <Skeleton className="h-4 w-32" />
+                  </div>
+                ))}
+              </div>
+
+              <hr />
+
+              <div className="space-y-3">
+                {Array.from({ length: 3 }, (_, i) => (
+                  <div key={i} className="flex justify-between">
+                    <Skeleton className="h-4 w-20" />
+                    <Skeleton className="h-4 w-36" />
+                  </div>
+                ))}
+              </div>
+
+              <Skeleton className="h-8 w-full" />
             </CardContent>
           </Card>
         )}
