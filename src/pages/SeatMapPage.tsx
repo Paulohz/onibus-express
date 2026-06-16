@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { toast } from 'sonner'
 import { useBookingStore } from '@/store/useBookingStore'
 import { getTripSeats } from '@/services/trips'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 import type { Seat } from '@/types'
-
+import { ArrowLeft } from 'lucide-react'
 export default function SeatMapPage() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -16,14 +18,29 @@ export default function SeatMapPage() {
   const [seats, setSeats] = useState<Seat[]>([])
   const [selectedSeat, setLocalSelectedSeat] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [hasError, setHasError] = useState(false)
 
   useEffect(() => {
     if (!id) return
-    getTripSeats(Number(id))
-      .then(setSeats)
-      .catch(() => setError('Erro ao carregar assentos.'))
-      .finally(() => setLoading(false))
+
+    async function loadSeats() {
+      setHasError(false)
+      setLoading(true)
+
+      try {
+        const seats = await getTripSeats(Number(id))
+        setSeats(seats)
+      } catch {
+        toast.error('Erro ao carregar assentos. Tente novamente.', {
+          id: 'seat-load-error',
+        })
+        setHasError(true)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    void loadSeats()
   }, [id])
 
   function handleSelectSeat(seat: Seat) {
@@ -46,13 +63,14 @@ export default function SeatMapPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 p-6">
+    <main className="p-6">
       <div className="max-w-2xl mx-auto space-y-6">
         <button
           onClick={() => navigate(-1)}
-          className="text-sm text-slate-500 hover:text-slate-800 transition-colors"
+          className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-800 transition-colors"
         >
-          ← Voltar
+          <ArrowLeft className="h-4 w-4" />
+          Voltar
         </button>
 
         <div>
@@ -80,11 +98,24 @@ export default function SeatMapPage() {
 
         <Card>
           <CardContent className="pt-6">
-            {loading && <p className="text-center text-slate-500">Carregando assentos...</p>}
+            {loading && (
+              <div className="grid grid-cols-4 gap-2">
+                {Array.from({ length: 40 }, (_, i) => (
+                  <Skeleton key={i} className="h-10 rounded" />
+                ))}
+              </div>
+            )}
 
-            {error && <p className="text-center text-red-500">{error}</p>}
+            {!loading && hasError && (
+              <div className="text-center py-12 space-y-4">
+                <p className="text-slate-500">Não foi possível carregar os assentos.</p>
+                <Button variant="outline" onClick={() => navigate(-1)}>
+                  Voltar e escolher outra viagem
+                </Button>
+              </div>
+            )}
 
-            {!loading && !error && (
+            {!loading && !hasError && (
               <div className="grid grid-cols-4 gap-2">
                 {seats.map((seat) => (
                   <button
@@ -100,7 +131,7 @@ export default function SeatMapPage() {
                           ? 'bg-slate-800 text-white cursor-not-allowed'
                           : selectedSeat === seat.number
                             ? 'bg-blue-500 text-white'
-                            : 'bg-slate-200 text-slate-800 hover:bg-slate-300 cursor-pointer'
+                            : 'bg-slate-200 text-slate-800 hover:bg-slate-300'
                       }
                     `}
                   >
@@ -125,7 +156,7 @@ export default function SeatMapPage() {
               <div className="text-right space-y-1">
                 <p className="text-sm text-slate-500">Valor</p>
                 <p className="text-xl font-bold text-slate-800">
-                  R$ {selectedTrip.basePrice.toFixed(2)}
+                  R$ {selectedTrip.basePrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                 </p>
               </div>
             </CardContent>

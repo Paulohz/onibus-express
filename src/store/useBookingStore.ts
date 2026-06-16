@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { persist, createJSONStorage } from 'zustand/middleware'
 import type { Trip, Passenger, SearchParams } from '@/types'
 
 type BookingStore = {
@@ -23,12 +24,20 @@ const initialState = {
   bookingCode: null,
 }
 
-export const useBookingStore = create<BookingStore>((set) => ({
-  ...initialState,
-  setSearchParams: (params) => set({ searchParams: params }),
-  setSelectedTrip: (trip) => set({ selectedTrip: trip }),
-  setSelectedSeat: (seat) => set({ selectedSeat: seat }),
-  setPassenger: (passenger) => set({ passenger }),
-  setBookingCode: (code) => set({ bookingCode: code }),
-  reset: () => set(initialState),
-}))
+export const useBookingStore = create<BookingStore>()(
+  persist(
+    (set) => ({
+      ...initialState,
+      setSearchParams: (params) => set({ searchParams: params }),
+      setSelectedTrip: (trip) => set({ selectedTrip: trip }),
+      setSelectedSeat: (seat) => set({ selectedSeat: seat }),
+      setPassenger: (passenger) => set({ passenger }),
+      setBookingCode: (code) => set({ bookingCode: code }),
+      reset: () => set(initialState),
+    }),
+    {
+      name: 'booking-store',
+      storage: createJSONStorage(() => sessionStorage),
+    }
+  )
+)

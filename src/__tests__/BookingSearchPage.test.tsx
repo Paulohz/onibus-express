@@ -5,6 +5,7 @@ import { vi } from 'vitest'
 import BookingSearchPage from '@/pages/BookingSearchPage'
 import { getBooking, cancelBooking } from '@/services/booking'
 import type { Booking, Trip } from '@/types'
+import { toast } from 'sonner'
 
 vi.mock('@/services/booking')
 
@@ -102,11 +103,13 @@ describe('BookingSearchPage', () => {
     await userEvent.type(screen.getByLabelText('Código da reserva'), 'ABC-99999')
     await userEvent.click(screen.getByText('Buscar reserva'))
 
-    expect(
-      await screen.findByText('Reserva não encontrada. Verifique o código e tente novamente.')
-    ).toBeInTheDocument()
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith(
+        'Reserva não encontrada. Verifique o código e tente novamente.',
+        { id: 'booking-search-error' }
+      )
+    })
   })
-
   it('deve cancelar reserva ao clicar em cancelar', async () => {
     mockGetBooking.mockResolvedValue(mockBooking)
     mockCancelBooking.mockResolvedValue(undefined)
