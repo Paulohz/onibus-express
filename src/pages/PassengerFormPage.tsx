@@ -9,12 +9,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent } from '@/components/ui/card'
 import { useState } from 'react'
-
+import { useCPFMask } from '@/hooks/useCPFMask'
 export default function PassengerFormPage() {
   const navigate = useNavigate()
   const { selectedTrip, selectedSeat, setPassenger, setBookingCode } = useBookingStore()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const { displayValue: cpfDisplay, onChange: onCPFChange } = useCPFMask()
 
   const {
     register,
@@ -91,7 +92,16 @@ export default function PassengerFormPage() {
 
               <div className="space-y-1">
                 <Label htmlFor="cpf">CPF</Label>
-                <Input id="cpf" placeholder="Ex: 123.456.789-00" {...register('cpf')} />
+                <Input
+                  id="cpf"
+                  placeholder="000.000.000-00"
+                  value={cpfDisplay}
+                  {...register('cpf')}
+                  onChange={(e) => {
+                    onCPFChange(e)
+                    register('cpf').onChange(e)
+                  }}
+                />
                 {errors.cpf && <p className="text-sm text-red-500">{errors.cpf.message}</p>}
               </div>
 
