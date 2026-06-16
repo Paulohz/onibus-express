@@ -1,16 +1,17 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { searchTrips } from '@/services/trips'
+import { getRoutes, searchTrips } from '@/services/trips'
 import { useBookingStore } from '@/store/useBookingStore'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent } from '@/components/ui/card'
-import type { Trip } from '@/types'
+import type { Route, Trip } from '@/types'
 import { searchSchema, type SearchForm } from '@/schemas/searchSchema'
 import { DatePicker } from '@/components/DatePicker'
+import { RouteCombobox } from '@/components/RouteCombobox'
+
 export default function SearchPage() {
   const navigate = useNavigate()
   const setSearchParams = useBookingStore((s) => s.setSearchParams)
@@ -21,16 +22,26 @@ export default function SearchPage() {
   const [searched, setSearched] = useState(false)
   const [searchError, setSearchError] = useState<string | null>(null)
 
+  const [routes, setRoutes] = useState<Route[]>([])
+
   const {
-    register,
     handleSubmit,
     setValue,
+    watch,
     control,
     formState: { errors },
   } = useForm<SearchForm>({
     resolver: zodResolver(searchSchema),
+    defaultValues: {
+      origin: '',
+      destination: '',
+      date: '',
+    },
   })
   const dateValue = useWatch({ control, name: 'date' })
+
+  const origins = [...new Set(routes.map((r) => r.origin))]
+  const destinations = [...new Set(routes.map((r) => r.destination))]
 
   async function onSubmit(data: SearchForm) {
     setLoading(true)
@@ -57,30 +68,38 @@ export default function SearchPage() {
     navigate(`/viagens/${trip.id}/assentos`)
   }
 
-  return (
-    <main className="min-h-screen bg-slate-50 p-6">
-      <div className="max-w-2xl mx-auto space-y-6">
-        <h1 className="text-3xl font-bold text-slate-800">OniBus Express</h1>
+  useEffect(() => {
+    getRoutes().then(setRoutes)
+  }, [])
 
+  return (
+    <main className="min-h-screen p-6">
+      <div className="max-w-2xl mx-auto space-y-6">
         <Card>
           <CardContent className="pt-6 space-y-4">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-1">
                 <Label htmlFor="origin">Origem</Label>
-                <Input id="origin" placeholder="Ex: São Paulo" {...register('origin')} />
-                {errors.origin && <p className="text-sm text-red-500">{errors.origin.message}</p>}
+                <RouteCombobox
+                  id="origin"
+                  options={origins}
+                  value={watch('origin')}
+                  onChange={(val) => setValue('origin', val, { shouldValidate: true })}
+                  placeholder="Selecione a origem"
+                  error={errors.origin?.message}
+                />
               </div>
 
               <div className="space-y-1">
                 <Label htmlFor="destination">Destino</Label>
-                <Input
+                <RouteCombobox
                   id="destination"
-                  placeholder="Ex: Rio de Janeiro"
-                  {...register('destination')}
+                  options={destinations}
+                  value={watch('destination')}
+                  onChange={(val) => setValue('destination', val, { shouldValidate: true })}
+                  placeholder="Selecione o destino"
+                  error={errors.destination?.message}
                 />
-                {errors.destination && (
-                  <p className="text-sm text-red-500">{errors.destination.message}</p>
-                )}
               </div>
 
               <div className="space-y-1">
