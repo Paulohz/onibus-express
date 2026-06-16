@@ -115,7 +115,7 @@ export default function SearchPage() {
                 <CardContent className="pt-6 flex items-center justify-between">
                   <div className="space-y-1">
                     <p className="font-semibold text-slate-800">
-                      {trip.route.origin} → {trip.route.destination}
+                      {trip.route.origin} - {trip.route.destination}
                     </p>
                     <p className="text-sm text-slate-500">
                       {new Date(trip.departureDateTime).toLocaleString('pt-BR')}

@@ -58,7 +58,7 @@ export default function SeatMapPage() {
         <div>
           <h1 className="text-2xl font-bold text-slate-800">Selecione seu assento</h1>
           <p className="text-slate-500 mt-1">
-            {selectedTrip.route.origin} → {selectedTrip.route.destination} •{' '}
+            {selectedTrip.route.origin} - {selectedTrip.route.destination} •{' '}
             {new Date(selectedTrip.departureDateTime).toLocaleString('pt-BR')}
           </p>
         </div>

@@ -95,7 +95,7 @@ describe('SearchPage', () => {
     await userEvent.click(screen.getByText('Buscar passagens'))
 
     await waitFor(() => {
-      expect(screen.getByText('São Paulo → Rio de Janeiro')).toBeInTheDocument()
+      expect(screen.getByText('São Paulo - Rio de Janeiro')).toBeInTheDocument()
     })
   })
 
