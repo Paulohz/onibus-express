@@ -27,7 +27,6 @@ export default function SearchPage() {
   const {
     handleSubmit,
     setValue,
-    watch,
     control,
     formState: { errors },
   } = useForm<SearchForm>({
@@ -39,6 +38,8 @@ export default function SearchPage() {
     },
   })
   const dateValue = useWatch({ control, name: 'date' })
+  const originValue = useWatch({ control, name: 'origin' })
+  const destinationValue = useWatch({ control, name: 'destination' })
 
   const origins = [...new Set(routes.map((r) => r.origin))]
   const destinations = [...new Set(routes.map((r) => r.destination))]
@@ -83,7 +84,7 @@ export default function SearchPage() {
                 <RouteCombobox
                   id="origin"
                   options={origins}
-                  value={watch('origin')}
+                  value={originValue}
                   onChange={(val) => setValue('origin', val, { shouldValidate: true })}
                   placeholder="Selecione a origem"
                   error={errors.origin?.message}
@@ -95,7 +96,7 @@ export default function SearchPage() {
                 <RouteCombobox
                   id="destination"
                   options={destinations}
-                  value={watch('destination')}
+                  value={destinationValue}
                   onChange={(val) => setValue('destination', val, { shouldValidate: true })}
                   placeholder="Selecione o destino"
                   error={errors.destination?.message}
