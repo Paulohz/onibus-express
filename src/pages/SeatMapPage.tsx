@@ -9,6 +9,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { Seat } from '@/types'
 import { ArrowLeft } from 'lucide-react'
+import { cn } from '@/lib/utils'
 export default function SeatMapPage() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -56,8 +57,8 @@ export default function SeatMapPage() {
 
   if (!selectedTrip) {
     return (
-      <main className="min-h-screen bg-slate-50 p-6 flex items-center justify-center">
-        <p className="text-slate-500">Nenhuma viagem selecionada.</p>
+      <main className="min-h-screen bg-background p-6 flex items-center justify-center">
+        <p className="text-muted-foreground">Nenhuma viagem selecionada.</p>
       </main>
     )
   }
@@ -67,15 +68,15 @@ export default function SeatMapPage() {
       <div className="max-w-2xl mx-auto space-y-6">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-800 transition-colors"
+          className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Voltar
         </button>
 
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Selecione seu assento</h1>
-          <p className="text-slate-500 mt-1">
+          <h1 className="text-2xl font-bold text-foreground">Selecione seu assento</h1>
+          <p className="text-muted-foreground mt-1">
             {selectedTrip.route.origin} - {selectedTrip.route.destination} •{' '}
             {new Date(selectedTrip.departureDateTime).toLocaleString('pt-BR')}
           </p>
@@ -83,16 +84,16 @@ export default function SeatMapPage() {
 
         <div className="flex gap-4 text-sm">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-slate-200" />
-            <span className="text-slate-600">Livre</span>
+            <div className="w-6 h-6 rounded bg-secondary border border-border" />
+            <span className="text-muted-foreground">Livre</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-slate-800" />
-            <span className="text-slate-600">Ocupado</span>
+            <div className="w-6 h-6 rounded bg-muted opacity-50" />
+            <span className="text-muted-foreground">Ocupado</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded bg-blue-500" />
-            <span className="text-slate-600">Selecionado</span>
+            <div className="w-6 h-6 rounded bg-primary" />
+            <span className="text-muted-foreground">Selecionado</span>
           </div>
         </div>
 
@@ -108,7 +109,7 @@ export default function SeatMapPage() {
 
             {!loading && hasError && (
               <div className="text-center py-12 space-y-4">
-                <p className="text-slate-500">Não foi possível carregar os assentos.</p>
+                <p className="text-muted-foreground">Não foi possível carregar os assentos.</p>
                 <Button variant="outline" onClick={() => navigate(-1)}>
                   Voltar e escolher outra viagem
                 </Button>
@@ -124,16 +125,17 @@ export default function SeatMapPage() {
                     disabled={seat.isOccupied}
                     aria-label={`Assento ${seat.number}`}
                     aria-pressed={selectedSeat === seat.number}
-                    className={`
-                      h-10 rounded text-sm font-medium transition-colors
-                      ${
-                        seat.isOccupied
-                          ? 'bg-slate-800 text-white cursor-not-allowed'
-                          : selectedSeat === seat.number
-                            ? 'bg-blue-500 text-white'
-                            : 'bg-slate-200 text-slate-800 hover:bg-slate-300'
-                      }
-                    `}
+                    className={cn(
+                      'h-10 rounded text-sm font-medium transition-colors',
+                      seat.isOccupied &&
+                        'bg-muted text-muted-foreground cursor-not-allowed opacity-50',
+                      !seat.isOccupied &&
+                        selectedSeat === seat.number &&
+                        'bg-primary text-primary-foreground',
+                      !seat.isOccupied &&
+                        selectedSeat !== seat.number &&
+                        'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                    )}
                   >
                     {seat.number}
                   </button>
@@ -147,15 +149,15 @@ export default function SeatMapPage() {
           <Card>
             <CardContent className="pt-6 flex items-center justify-between">
               <div className="space-y-1">
-                <p className="text-sm text-slate-500">Assento selecionado</p>
+                <p className="text-sm text-muted-foreground">Assento selecionado</p>
                 <div className="flex items-center gap-2">
-                  <span className="text-xl font-bold text-slate-800">{selectedSeat}</span>
+                  <span className="text-xl font-bold text-foreground">{selectedSeat}</span>
                   <Badge variant="secondary">Disponível</Badge>
                 </div>
               </div>
               <div className="text-right space-y-1">
-                <p className="text-sm text-slate-500">Valor</p>
-                <p className="text-xl font-bold text-slate-800">
+                <p className="text-sm text-muted-foreground">Valor</p>
+                <p className="text-xl font-bold text-foreground">
                   R$ {selectedTrip.basePrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                 </p>
               </div>

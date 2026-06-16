@@ -64,17 +64,17 @@ export default function BookingSearchPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 p-6">
+    <main className="min-h-screen bg-background p-6">
       <div className="max-w-2xl mx-auto space-y-6">
         <button
           onClick={() => navigate(-1)}
-          className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-800 transition-colors"
+          className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="h-4 w-4" />
           Voltar
         </button>
 
-        <h1 className="text-2xl font-bold text-slate-800">Consultar reserva</h1>
+        <h1 className="text-2xl font-bold text-foreground">Consultar reserva</h1>
 
         <Card>
           <CardContent className="pt-6">
@@ -95,8 +95,8 @@ export default function BookingSearchPage() {
         {cancelled && (
           <Card>
             <CardContent className="pt-6 text-center space-y-2">
-              <p className="font-medium text-slate-800">Reserva cancelada com sucesso.</p>
-              <p className="text-sm text-slate-500">
+              <p className="font-medium text-foreground">Reserva cancelada com sucesso.</p>
+              <p className="text-sm text-muted-foreground">
                 Você pode fazer uma nova busca a qualquer momento.
               </p>
             </CardContent>
@@ -142,7 +142,7 @@ export default function BookingSearchPage() {
           <Card>
             <CardContent className="pt-6 space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-500">Código da reserva</span>
+                <span className="text-sm text-muted-foreground">Código da reserva</span>
                 <Badge className="text-base px-3 py-1">{booking.bookingCode}</Badge>
               </div>
 
@@ -150,30 +150,30 @@ export default function BookingSearchPage() {
 
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Status</span>
+                  <span className="text-muted-foreground">Status</span>
                   <Badge variant={booking.status === 'CONFIRMED' ? 'default' : 'secondary'}>
                     {booking.status === 'CONFIRMED' ? 'Confirmada' : 'Cancelada'}
                   </Badge>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Rota</span>
-                  <span className="font-medium text-slate-800">
+                  <span className="text-muted-foreground">Rota</span>
+                  <span className="font-medium text-foreground">
                     {booking.trip.route.origin} - {booking.trip.route.destination}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Data</span>
-                  <span className="font-medium text-slate-800">
+                  <span className="text-muted-foreground">Data</span>
+                  <span className="font-medium text-foreground">
                     {new Date(booking.trip.departureDateTime).toLocaleString('pt-BR')}
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Assento</span>
-                  <span className="font-medium text-slate-800">{booking.seatNumber}</span>
+                  <span className="text-muted-foreground">Assento</span>
+                  <span className="font-medium text-foreground">{booking.seatNumber}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Valor</span>
-                  <span className="font-medium text-slate-800">
+                  <span className="text-muted-foreground">Valor</span>
+                  <span className="font-medium text-foreground">
                     R${' '}
                     {booking.trip.basePrice.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                   </span>
@@ -184,16 +184,16 @@ export default function BookingSearchPage() {
 
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Passageiro</span>
-                  <span className="font-medium text-slate-800">{booking.passenger.name}</span>
+                  <span className="text-muted-foreground">Passageiro</span>
+                  <span className="font-medium text-foreground">{booking.passenger.name}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">CPF</span>
-                  <span className="font-medium text-slate-800">{booking.passenger.cpf}</span>
+                  <span className="text-muted-foreground">CPF</span>
+                  <span className="font-medium text-foreground">{booking.passenger.cpf}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">E-mail</span>
-                  <span className="font-medium text-slate-800">{booking.passenger.email}</span>
+                  <span className="text-muted-foreground">E-mail</span>
+                  <span className="font-medium text-foreground">{booking.passenger.email}</span>
                 </div>
               </div>
 
