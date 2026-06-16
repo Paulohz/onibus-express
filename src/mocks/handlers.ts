@@ -52,4 +52,44 @@ export const handlers = [
       status: 'CONFIRMED',
     })
   }),
+
+  http.get(`${API_URL}/rotas`, () => {
+    return HttpResponse.json([
+      { id: 1, origin: 'São Paulo', destination: 'Rio de Janeiro', estimatedDuration: '6h' },
+      { id: 2, origin: 'São Paulo', destination: 'Curitiba', estimatedDuration: '6h' },
+      { id: 3, origin: 'Rio de Janeiro', destination: 'Belo Horizonte', estimatedDuration: '5h' },
+      { id: 4, origin: 'Curitiba', destination: 'Florianópolis', estimatedDuration: '2h' },
+      { id: 5, origin: 'Belo Horizonte', destination: 'Salvador', estimatedDuration: '8h' },
+    ])
+  }),
+
+  http.get(`${API_URL}/reservas/:codigo`, ({ params }) => {
+    return HttpResponse.json({
+      bookingCode: params.codigo,
+      status: 'CONFIRMED',
+      trip: {
+        id: 1,
+        route: {
+          id: 1,
+          origin: 'São Paulo',
+          destination: 'Rio de Janeiro',
+          estimatedDuration: '6h',
+        },
+        departureDateTime: '2026-06-17T08:00:00',
+        basePrice: 89.9,
+        availableSeats: 15,
+        totalSeats: 40,
+      },
+      passenger: {
+        name: 'João Silva',
+        cpf: '529.982.247-25',
+        email: 'joao@email.com',
+      },
+      seatNumber: 5,
+    })
+  }),
+
+  http.delete(`${API_URL}/reservas/:codigo`, () => {
+    return HttpResponse.json({ success: true })
+  }),
 ]
